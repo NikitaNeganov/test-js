@@ -45,8 +45,9 @@ class Chart extends Component {
     yearChangedHandler = (event) => {
       this.setState({
         ...this.state,
-        year: event.target.value,
+        year: +event.target.value,
       });
+      console.log(this.state)
     }
 
     displayTypeChangedHandler = (event) => {
