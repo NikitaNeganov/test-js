@@ -10,20 +10,26 @@ class Chart extends Component {
         displayType: 'Goods',
         displayData: []
     }
+    getRandomColor = () => {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
 
     componentWillMount() {
         console.log(this.state)
-        let forChart = [];
         let seriesData = [];
         const smth = Products.map(obj => {
             //console.log(obj);
-            forChart.push([obj['feature1'], obj['feature2']]);
             //console.log(forChart)
             seriesData.push(
                 {
                     name: obj['name'], 
-                    color: '#138', 
-                    data: [obj['feature1'], obj['feature2']]
+                    color: this.getRandomColor(), 
+                    data: [[obj['feature1'], obj['feature2']]]
                 }
             )
         })
@@ -107,7 +113,7 @@ class Chart extends Component {
                     },
                     tooltip: {
                         headerFormat: '<b>{series.name}</b><br>',
-                        pointFormat: '{point.x} cm, {point.y} kg'
+                        pointFormat: '{point.x} F1, {point.y} F2'
                     }
                 }
             },

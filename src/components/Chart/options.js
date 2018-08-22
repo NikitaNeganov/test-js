@@ -58,7 +58,7 @@ export const options = {
             },
             tooltip: {
                 headerFormat: '<b>{series.name}</b><br>',
-                pointFormat: '{point.x} cm, {point.y} kg'
+                pointFormat: '{point.x} F1, {point.y} F2'
             }
         }
     },
