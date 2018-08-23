@@ -47,7 +47,7 @@ class Chart extends Component {
         ...this.state,
         year: +event.target.value,
       });
-      console.log(this.state)
+      console.log(+event.target.value)
     }
 
     displayTypeChangedHandler = (event) => {
@@ -58,6 +58,7 @@ class Chart extends Component {
     }
 
     render() {
+      
       const options = {
 
         chart: {
@@ -118,7 +119,7 @@ class Chart extends Component {
             },
           },
         },
-        series: this.state.displayData,
+        series: this.state.displayData || temporaryDisplay,
       };
 
       return (
