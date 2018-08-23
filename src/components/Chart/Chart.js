@@ -17,7 +17,7 @@ class Chart extends Component {
 
     getDataByYear = (year) => {
       const seriesData = [];
-      if (!this.state || this.state.displayType !== 'Groups of Goods'){
+      if (!this.state || this.state.displayType === 'Goods'){
         products.forEach((obj) => {
           // console.log(obj);
           // console.log(forChart)
@@ -31,24 +31,27 @@ class Chart extends Component {
             );
           }
         });
-      } else {
+      } else if (this.state.displayType === 'Groups of Goods') {
         let seriesMore150 = [];
         let seriesLess100 = [];
         let seriesOther = [];
         products.forEach(obj => {
-          if (obj.feature1 > 150){
-            seriesMore150.push(
-              [obj.feature1, obj.feature2]
-            )
-          } else if (obj.feature1 < 100) {
-            seriesLess100.push(
-              [obj.feature1, obj.feature2]
-            )
-          } else {
-            seriesOther.push(
-              [obj.feature1, obj.feature2]
-            )
+          if (obj.year === year){
+            if (obj.feature1 > 150){
+              seriesMore150.push(
+                [obj.feature1, obj.feature2]
+              )
+            } else if (obj.feature1 < 100) {
+              seriesLess100.push(
+                [obj.feature1, obj.feature2]
+              )
+            } else {
+              seriesOther.push(
+                [obj.feature1, obj.feature2]
+              )
+            }
           }
+
         })
         seriesData.push(
           
@@ -90,6 +93,7 @@ class Chart extends Component {
     }
 
     displayTypeChangedHandler = (event) => {
+      const year = this.state.year;
       this.setState({
         displayType: event.target.value,
       });
