@@ -16,210 +16,225 @@ class Chart extends Component {
     };
   }
 
-    getDataByProps(year, displayType) {
-      let array2015 = [];
-      let array2016 = [];
-      products.forEach(el => {
-        if (el.year === 2015){
-          array2015.push(el)
-        } else if (el.year === 2016){
-          array2016.push(el)
-        }
-      })
-      const productData = {
-        2015: array2015,
-        2016: array2016,
+  getDataByProps(year, displayType) {
+    //      let array2015 = [];
+    //      let array2016 = [];
+    //      products.forEach(el => {
+    //        if (el.year === 2015){
+    //          array2015.push(el)
+    //        } else if (el.year === 2016){
+    //          array2016.push(el)
+    //        }
+    //      })
+    //      const productData = {
+    //        2015: array2015,
+    //        2016: array2016,
+    //      }
+    //      console.log('ProductData inside GetDataByProps',productData)
+    //      console.log('ProductData[2016] inside GetDataByProps',productData[year])
+    const reduceData = data => data.reduce((previousValue, newValue) => {
+      const existingData = previousValue[newValue.year];
+      if (existingData) {
+        return {
+          ...previousValue,
+          [newValue.year]: [...existingData, newValue],
+        };
       }
-      console.log('ProductData inside GetDataByProps',productData)
-      console.log('ProductData[2016] inside GetDataByProps',productData[year])
-      return this.getDataByDisplayType(productData[year], displayType);
-    }
 
-    getDataByDisplayType(data, displayType) {
-      let seriesData = [];
-      if (displayType === 'Goods') {
-        data.forEach(obj => {
-          seriesData.push(
-            {
-              name: obj.name,
-              color: this.getRandomColor(),
-              data: [[obj.feature1, obj.feature2]],
-            },
-          );
-        })
-      } else if (displayType === 'Groups of Goods') {
-        let seriesMore150 = [];
-        let seriesLess100 = [];
-        let seriesOther = [];
-        data.forEach(obj => {
-          if (obj.feature1 > 150){
-            seriesMore150.push(
-              [obj.feature1, obj.feature2]
-            )
-          } else if (obj.feature1 < 100) {
-            seriesLess100.push(
-              [obj.feature1, obj.feature2]
-            )
-          } else {
-            seriesOther.push(
-              [obj.feature1, obj.feature2]
-            )
-          }
-      })
-      seriesData.push(
-        
+      return {
+        ...previousValue,
+        [newValue.year]: [newValue],
+      };
+    }, {});
+    const productData = reduceData(products);
+    return this.getDataByDisplayType(productData[year], displayType);
+  }
+
+  getDataByDisplayType(data, displayType) {
+    const seriesData = [];
+    if (displayType === 'Goods') {
+      data.forEach((obj) => {
+        seriesData.push(
           {
-            name: 'Feature1 > 150',
+            name: obj.name,
             color: this.getRandomColor(),
-            data: seriesMore150
-          }, {
-            name: 'Feature1 < 100',
-            color: this.getRandomColor(),
-            data: seriesLess100
-          }, {
-            name: 'Other',
-            color: this.getRandomColor(),
-            data: seriesOther
-          }
-        
-      )
-      } 
-      console.log('SeriesData inside getdataByDisplayType',seriesData);
-      return seriesData;
-    }
+            data: [[obj.feature1, obj.feature2]],
+          },
+        );
+      });
+    } else if (displayType === 'Groups of Goods') {
+      const seriesMore150 = [];
+      const seriesLess100 = [];
+      const seriesOther = [];
+      data.forEach((obj) => {
+        if (obj.feature1 > 150) {
+          seriesMore150.push(
+            [obj.feature1, obj.feature2],
+          );
+        } else if (obj.feature1 < 100) {
+          seriesLess100.push(
+            [obj.feature1, obj.feature2],
+          );
+        } else {
+          seriesOther.push(
+            [obj.feature1, obj.feature2],
+          );
+        }
+      });
+      seriesData.push(
 
-//    getDataByType = (type) => {
-//      let seriesData = [];
-//      let array2015 = [];
-//      let array2016 = [];
-//      products.forEach(el => {
-//        if (el.year === 2015){
-//          array2015.push(el)
-//        } else if (el.year === 2016){
-//          array2016.push(el)
-//        }
-//      })
-//      const productData = {
-//        2015: array2015,
-//        2016: array2016,
-//      }
-//      let seriesMore150 = [];
-//      let seriesLess100 = [];
-//      let seriesOther = [];
-//      if (type === 'Groups of Goods') {
-//        productData[this.state.year].forEach(obj => {
-//          if (obj.feature1 > 150){
-//            seriesMore150.push(
-//              [obj.feature1, obj.feature2]
-//            )
-//          } else if (obj.feature1 < 100) {
-//            seriesLess100.push(
-//              [obj.feature1, obj.feature2]
-//            )
-//          } else {
-//            seriesOther.push(
-//              [obj.feature1, obj.feature2]
-//            )
-//          }
-//      })
-//      seriesData.push(
-//        
-//          {
-//            name: 'Feature1 > 150',
-//            color: this.getRandomColor(),
-//            data: seriesMore150
-//          }, {
-//            name: 'Feature1 < 100',
-//            color: this.getRandomColor(),
-//            data: seriesLess100
-//          }, {
-//            name: 'Other',
-//            color: this.getRandomColor(),
-//            data: seriesOther
-//          }
-//        
-//      )
-//      } else if (type === 'Goods'){
-//        productData[this.state.year].forEach(obj => {
-//          seriesData.push(
-//            {
-//              name: obj.name,
-//              color: this.getRandomColor(),
-//              data: [[obj.feature1, obj.feature2]],
-//            },
-//          );
-//        })
-//      }
-//      
-//      return seriesData;
-//    }
-//    
-//
-//    getDataByYear = (year) => {
-//      let seriesData = [];
-//      let array2015 = [];
-//      let array2016 = [];
-//      
-//      products.forEach(el => {
-//        if (el.year === 2015){
-//          array2015.push(el)
-//        } else if (el.year === 2016){
-//          array2016.push(el)
-//        }
-//      })
-//      const productData = {
-//        2015: array2015,
-//        2016: array2016,
-//      }
-//      if (!this.state || (this.state.type === 'Goods')){
-//        productData[year].forEach(obj => {
-//          seriesData.push(
-//            {
-//              name: obj.name,
-//              color: this.getRandomColor(),
-//              data: [[obj.feature1, obj.feature2]],
-//            },
-//          );
-//        })
-//      } else if (this.state.type === 'Groups of Goods'){
-//        let seriesMore150 = [];
-//        let seriesLess100 = [];
-//        let seriesOther = [];
-//        productData[year].forEach(obj => {
-//          if (obj.feature1 > 150){
-//            seriesMore150.push(
-//              [obj.feature1, obj.feature2]
-//            )
-//          } else if (obj.feature1 < 100) {
-//            seriesLess100.push(
-//              [obj.feature1, obj.feature2]
-//            )
-//          } else {
-//            seriesOther.push(
-//              [obj.feature1, obj.feature2]
-//            )
-//          }
-//      })
-//      seriesData.push(        
-//          {
-//            name: 'Feature1 > 150',
-//            color: this.getRandomColor(),
-//            data: seriesMore150
-//          }, {
-//            name: 'Feature1 < 100',
-//            color: this.getRandomColor(),
-//            data: seriesLess100
-//          }, {
-//            name: 'Other',
-//            color: this.getRandomColor(),
-//            data: seriesOther
-//          }
-//        
-//      )
-//      }
-//      
-//      return seriesData;
-//    }
+        {
+          name: 'Feature1 > 150',
+          color: this.getRandomColor(),
+          data: seriesMore150,
+        }, {
+          name: 'Feature1 < 100',
+          color: this.getRandomColor(),
+          data: seriesLess100,
+        }, {
+          name: 'Other',
+          color: this.getRandomColor(),
+          data: seriesOther,
+        },
+
+      );
+    }
+    console.log('SeriesData inside getdataByDisplayType', seriesData);
+    return seriesData;
+  }
+
+  //    getDataByType = (type) => {
+  //      let seriesData = [];
+  //      let array2015 = [];
+  //      let array2016 = [];
+  //      products.forEach(el => {
+  //        if (el.year === 2015){
+  //          array2015.push(el)
+  //        } else if (el.year === 2016){
+  //          array2016.push(el)
+  //        }
+  //      })
+  //      const productData = {
+  //        2015: array2015,
+  //        2016: array2016,
+  //      }
+  //      let seriesMore150 = [];
+  //      let seriesLess100 = [];
+  //      let seriesOther = [];
+  //      if (type === 'Groups of Goods') {
+  //        productData[this.state.year].forEach(obj => {
+  //          if (obj.feature1 > 150){
+  //            seriesMore150.push(
+  //              [obj.feature1, obj.feature2]
+  //            )
+  //          } else if (obj.feature1 < 100) {
+  //            seriesLess100.push(
+  //              [obj.feature1, obj.feature2]
+  //            )
+  //          } else {
+  //            seriesOther.push(
+  //              [obj.feature1, obj.feature2]
+  //            )
+  //          }
+  //      })
+  //      seriesData.push(
+  //
+  //          {
+  //            name: 'Feature1 > 150',
+  //            color: this.getRandomColor(),
+  //            data: seriesMore150
+  //          }, {
+  //            name: 'Feature1 < 100',
+  //            color: this.getRandomColor(),
+  //            data: seriesLess100
+  //          }, {
+  //            name: 'Other',
+  //            color: this.getRandomColor(),
+  //            data: seriesOther
+  //          }
+  //
+  //      )
+  //      } else if (type === 'Goods'){
+  //        productData[this.state.year].forEach(obj => {
+  //          seriesData.push(
+  //            {
+  //              name: obj.name,
+  //              color: this.getRandomColor(),
+  //              data: [[obj.feature1, obj.feature2]],
+  //            },
+  //          );
+  //        })
+  //      }
+  //
+  //      return seriesData;
+  //    }
+  //
+  //
+  //    getDataByYear = (year) => {
+  //      let seriesData = [];
+  //      let array2015 = [];
+  //      let array2016 = [];
+  //
+  //      products.forEach(el => {
+  //        if (el.year === 2015){
+  //          array2015.push(el)
+  //        } else if (el.year === 2016){
+  //          array2016.push(el)
+  //        }
+  //      })
+  //      const productData = {
+  //        2015: array2015,
+  //        2016: array2016,
+  //      }
+  //      if (!this.state || (this.state.type === 'Goods')){
+  //        productData[year].forEach(obj => {
+  //          seriesData.push(
+  //            {
+  //              name: obj.name,
+  //              color: this.getRandomColor(),
+  //              data: [[obj.feature1, obj.feature2]],
+  //            },
+  //          );
+  //        })
+  //      } else if (this.state.type === 'Groups of Goods'){
+  //        let seriesMore150 = [];
+  //        let seriesLess100 = [];
+  //        let seriesOther = [];
+  //        productData[year].forEach(obj => {
+  //          if (obj.feature1 > 150){
+  //            seriesMore150.push(
+  //              [obj.feature1, obj.feature2]
+  //            )
+  //          } else if (obj.feature1 < 100) {
+  //            seriesLess100.push(
+  //              [obj.feature1, obj.feature2]
+  //            )
+  //          } else {
+  //            seriesOther.push(
+  //              [obj.feature1, obj.feature2]
+  //            )
+  //          }
+  //      })
+  //      seriesData.push(
+  //          {
+  //            name: 'Feature1 > 150',
+  //            color: this.getRandomColor(),
+  //            data: seriesMore150
+  //          }, {
+  //            name: 'Feature1 < 100',
+  //            color: this.getRandomColor(),
+  //            data: seriesLess100
+  //          }, {
+  //            name: 'Other',
+  //            color: this.getRandomColor(),
+  //            data: seriesOther
+  //          }
+  //
+  //      )
+  //      }
+  //
+  //      return seriesData;
+  //    }
 
     getRandomColor = () => {
       const letters = '0123456789ABCDEF';
@@ -239,12 +254,12 @@ class Chart extends Component {
     }
 
     displayTypeChangedHandler = (event) => {
-      const displayType = event.target.value 
+      const displayType = event.target.value;
       this.setState({
         displayType,
         displayData: this.getDataByProps(this.state.year, displayType),
       });
-      console.log(this.state)
+      console.log(this.state);
     }
 
     render() {
