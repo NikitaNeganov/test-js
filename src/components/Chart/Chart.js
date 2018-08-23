@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import products, { options } from '../../data';
+import * as actions from '../../redux/actions';
 // import options from './options';
 
 class Chart extends Component {
@@ -99,10 +101,7 @@ class Chart extends Component {
 
   yearChangedHandler = (event) => {
     const year = Number(event.target.value);
-    this.setState({
-      year,
-      displayData: this.getDataByProps(year, this.state.displayType),
-    });
+    this.props.onSetYear(year);
   }
 
   displayTypeChangedHandler = (event) => {
@@ -115,7 +114,7 @@ class Chart extends Component {
   }
 
   render() {
-    options.series = this.state.displayData;
+    //options.series = this.state.displayData;
 
     return (
       <div>
@@ -123,18 +122,29 @@ class Chart extends Component {
           <option>Goods</option>
           <option>Groups of Goods</option>
         </select>
-        <select onChange={this.yearChangedHandler} value={this.state.year}>
+        <select onChange={this.yearChangedHandler} value={this.props.year}>
           <option>2016</option>
           <option>2015</option>
         </select>
         <select />
         <HighchartsReact
           highcharts={Highcharts}
-          options={options}
+          options={{
+            ...options,
+            series: this.state.displayData,
+          }}
         />
       </div>
     );
   }
 }
 
-export default Chart;
+const mapStateToProps = state => ({
+  year: state.data.year
+});
+
+const mapDispatchToProps = {
+  onSetYear: actions.setYear,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chart);
