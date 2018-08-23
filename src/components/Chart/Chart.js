@@ -17,19 +17,58 @@ class Chart extends Component {
 
     getDataByYear = (year) => {
       const seriesData = [];
-      products.forEach((obj) => {
-        // console.log(obj);
-        // console.log(forChart)
-        if (obj.year === year) {
-          seriesData.push(
+      if (!this.state || this.state.displayType !== 'Groups of Goods'){
+        products.forEach((obj) => {
+          // console.log(obj);
+          // console.log(forChart)
+          if (obj.year === year) {
+            seriesData.push(
+              {
+                name: obj.name,
+                color: this.getRandomColor(),
+                data: [[obj.feature1, obj.feature2]],
+              },
+            );
+          }
+        });
+      } else {
+        let seriesMore150 = [];
+        let seriesLess100 = [];
+        let seriesOther = [];
+        products.forEach(obj => {
+          if (obj.feature1 > 150){
+            seriesMore150.push(
+              [obj.feature1, obj.feature2]
+            )
+          } else if (obj.feature1 < 100) {
+            seriesLess100.push(
+              [obj.feature1, obj.feature2]
+            )
+          } else {
+            seriesOther.push(
+              [obj.feature1, obj.feature2]
+            )
+          }
+        })
+        seriesData.push(
+          
             {
-              name: obj.name,
+              name: 'Feature1 > 150',
               color: this.getRandomColor(),
-              data: [[obj.feature1, obj.feature2]],
-            },
-          );
-        }
-      });
+              data: seriesMore150
+            }, {
+              name: 'Feature1 < 100',
+              color: this.getRandomColor(),
+              data: seriesLess100
+            }, {
+              name: 'Other',
+              color: this.getRandomColor(),
+              data: seriesOther
+            }
+          
+        )
+      }
+      console.log(seriesData[1]);
       return seriesData;
     }
 
@@ -48,7 +87,6 @@ class Chart extends Component {
         year,
         displayData: this.getDataByYear(year),
       });
-      console.log(this.state);
     }
 
     displayTypeChangedHandler = (event) => {
