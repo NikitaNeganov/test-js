@@ -8,15 +8,15 @@ class Chart extends Component {
   constructor(props) {
     super(props);
     const year = 2016;
+    const displayType = 'Goods';
     this.state = {
       year,
-      displayType: 'Goods',
-      displayData: this.getDataByYear(year),
+      displayType,
+      displayData: this.getDataByProps(year, displayType),
     };
   }
 
-    getDataByType = (type) => {
-      let seriesData = [];
+    getDataByProps(year, displayType) {
       let array2015 = [];
       let array2016 = [];
       products.forEach(el => {
@@ -30,11 +30,28 @@ class Chart extends Component {
         2015: array2015,
         2016: array2016,
       }
-      let seriesMore150 = [];
-      let seriesLess100 = [];
-      let seriesOther = [];
-      if (type === 'Groups of Goods') {
-        productData[this.state.year].forEach(obj => {
+      console.log('ProductData inside GetDataByProps',productData)
+      console.log('ProductData[2016] inside GetDataByProps',productData[year])
+      return this.getDataByDisplayType(productData[year], displayType);
+    }
+
+    getDataByDisplayType(data, displayType) {
+      let seriesData = [];
+      if (displayType === 'Goods') {
+        data.forEach(obj => {
+          seriesData.push(
+            {
+              name: obj.name,
+              color: this.getRandomColor(),
+              data: [[obj.feature1, obj.feature2]],
+            },
+          );
+        })
+      } else if (displayType === 'Groups of Goods') {
+        let seriesMore150 = [];
+        let seriesLess100 = [];
+        let seriesOther = [];
+        data.forEach(obj => {
           if (obj.feature1 > 150){
             seriesMore150.push(
               [obj.feature1, obj.feature2]
@@ -66,87 +83,143 @@ class Chart extends Component {
           }
         
       )
-      } else if (type === 'Goods'){
-        productData[this.state.year].forEach(obj => {
-          seriesData.push(
-            {
-              name: obj.name,
-              color: this.getRandomColor(),
-              data: [[obj.feature1, obj.feature2]],
-            },
-          );
-        })
-      }
-      
+      } 
+      console.log('SeriesData inside getdataByDisplayType',seriesData);
       return seriesData;
     }
-    
 
-    getDataByYear = (year) => {
-      let seriesData = [];
-      let array2015 = [];
-      let array2016 = [];
-      
-      products.forEach(el => {
-        if (el.year === 2015){
-          array2015.push(el)
-        } else if (el.year === 2016){
-          array2016.push(el)
-        }
-      })
-      const productData = {
-        2015: array2015,
-        2016: array2016,
-      }
-      if (!this.state || (this.state.type === 'Goods')){
-        productData[year].forEach(obj => {
-          seriesData.push(
-            {
-              name: obj.name,
-              color: this.getRandomColor(),
-              data: [[obj.feature1, obj.feature2]],
-            },
-          );
-        })
-      } else if (this.state.type === 'Groups of Goods'){
-        let seriesMore150 = [];
-        let seriesLess100 = [];
-        let seriesOther = [];
-        productData[year].forEach(obj => {
-          if (obj.feature1 > 150){
-            seriesMore150.push(
-              [obj.feature1, obj.feature2]
-            )
-          } else if (obj.feature1 < 100) {
-            seriesLess100.push(
-              [obj.feature1, obj.feature2]
-            )
-          } else {
-            seriesOther.push(
-              [obj.feature1, obj.feature2]
-            )
-          }
-      })
-      seriesData.push(        
-          {
-            name: 'Feature1 > 150',
-            color: this.getRandomColor(),
-            data: seriesMore150
-          }, {
-            name: 'Feature1 < 100',
-            color: this.getRandomColor(),
-            data: seriesLess100
-          }, {
-            name: 'Other',
-            color: this.getRandomColor(),
-            data: seriesOther
-          }
-        
-      )
-      }
-      
-      return seriesData;
-    }
+//    getDataByType = (type) => {
+//      let seriesData = [];
+//      let array2015 = [];
+//      let array2016 = [];
+//      products.forEach(el => {
+//        if (el.year === 2015){
+//          array2015.push(el)
+//        } else if (el.year === 2016){
+//          array2016.push(el)
+//        }
+//      })
+//      const productData = {
+//        2015: array2015,
+//        2016: array2016,
+//      }
+//      let seriesMore150 = [];
+//      let seriesLess100 = [];
+//      let seriesOther = [];
+//      if (type === 'Groups of Goods') {
+//        productData[this.state.year].forEach(obj => {
+//          if (obj.feature1 > 150){
+//            seriesMore150.push(
+//              [obj.feature1, obj.feature2]
+//            )
+//          } else if (obj.feature1 < 100) {
+//            seriesLess100.push(
+//              [obj.feature1, obj.feature2]
+//            )
+//          } else {
+//            seriesOther.push(
+//              [obj.feature1, obj.feature2]
+//            )
+//          }
+//      })
+//      seriesData.push(
+//        
+//          {
+//            name: 'Feature1 > 150',
+//            color: this.getRandomColor(),
+//            data: seriesMore150
+//          }, {
+//            name: 'Feature1 < 100',
+//            color: this.getRandomColor(),
+//            data: seriesLess100
+//          }, {
+//            name: 'Other',
+//            color: this.getRandomColor(),
+//            data: seriesOther
+//          }
+//        
+//      )
+//      } else if (type === 'Goods'){
+//        productData[this.state.year].forEach(obj => {
+//          seriesData.push(
+//            {
+//              name: obj.name,
+//              color: this.getRandomColor(),
+//              data: [[obj.feature1, obj.feature2]],
+//            },
+//          );
+//        })
+//      }
+//      
+//      return seriesData;
+//    }
+//    
+//
+//    getDataByYear = (year) => {
+//      let seriesData = [];
+//      let array2015 = [];
+//      let array2016 = [];
+//      
+//      products.forEach(el => {
+//        if (el.year === 2015){
+//          array2015.push(el)
+//        } else if (el.year === 2016){
+//          array2016.push(el)
+//        }
+//      })
+//      const productData = {
+//        2015: array2015,
+//        2016: array2016,
+//      }
+//      if (!this.state || (this.state.type === 'Goods')){
+//        productData[year].forEach(obj => {
+//          seriesData.push(
+//            {
+//              name: obj.name,
+//              color: this.getRandomColor(),
+//              data: [[obj.feature1, obj.feature2]],
+//            },
+//          );
+//        })
+//      } else if (this.state.type === 'Groups of Goods'){
+//        let seriesMore150 = [];
+//        let seriesLess100 = [];
+//        let seriesOther = [];
+//        productData[year].forEach(obj => {
+//          if (obj.feature1 > 150){
+//            seriesMore150.push(
+//              [obj.feature1, obj.feature2]
+//            )
+//          } else if (obj.feature1 < 100) {
+//            seriesLess100.push(
+//              [obj.feature1, obj.feature2]
+//            )
+//          } else {
+//            seriesOther.push(
+//              [obj.feature1, obj.feature2]
+//            )
+//          }
+//      })
+//      seriesData.push(        
+//          {
+//            name: 'Feature1 > 150',
+//            color: this.getRandomColor(),
+//            data: seriesMore150
+//          }, {
+//            name: 'Feature1 < 100',
+//            color: this.getRandomColor(),
+//            data: seriesLess100
+//          }, {
+//            name: 'Other',
+//            color: this.getRandomColor(),
+//            data: seriesOther
+//          }
+//        
+//      )
+//      }
+//      
+//      return seriesData;
+//    }
 
     getRandomColor = () => {
       const letters = '0123456789ABCDEF';
@@ -161,14 +234,15 @@ class Chart extends Component {
       const year = Number(event.target.value);
       this.setState({
         year,
-        displayData: this.getDataByYear(year),
+        displayData: this.getDataByProps(year, this.state.displayType),
       });
     }
 
     displayTypeChangedHandler = (event) => {
+      const displayType = event.target.value 
       this.setState({
-        displayType: event.target.value,
-        displayData: this.getDataByType(event.target.value)
+        displayType,
+        displayData: this.getDataByProps(this.state.year, displayType),
       });
       console.log(this.state)
     }
