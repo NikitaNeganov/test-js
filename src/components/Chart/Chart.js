@@ -15,63 +15,136 @@ class Chart extends Component {
     };
   }
 
-    getDataByYear = (year) => {
-      const seriesData = [];
-      if (!this.state || this.state.displayType === 'Goods'){
-        products.forEach((obj) => {
-          // console.log(obj);
-          // console.log(forChart)
-          if (obj.year === year) {
-            seriesData.push(
-              {
-                name: obj.name,
-                color: this.getRandomColor(),
-                data: [[obj.feature1, obj.feature2]],
-              },
-            );
+    getDataByType = (type) => {
+      let seriesData = [];
+      let array2015 = [];
+      let array2016 = [];
+      products.forEach(el => {
+        if (el.year === 2015){
+          array2015.push(el)
+        } else if (el.year === 2016){
+          array2016.push(el)
+        }
+      })
+      const productData = {
+        2015: array2015,
+        2016: array2016,
+      }
+      let seriesMore150 = [];
+      let seriesLess100 = [];
+      let seriesOther = [];
+      if (type === 'Groups of Goods') {
+        productData[this.state.year].forEach(obj => {
+          if (obj.feature1 > 150){
+            seriesMore150.push(
+              [obj.feature1, obj.feature2]
+            )
+          } else if (obj.feature1 < 100) {
+            seriesLess100.push(
+              [obj.feature1, obj.feature2]
+            )
+          } else {
+            seriesOther.push(
+              [obj.feature1, obj.feature2]
+            )
           }
-        });
-      } else if (this.state.displayType === 'Groups of Goods') {
+      })
+      seriesData.push(
+        
+          {
+            name: 'Feature1 > 150',
+            color: this.getRandomColor(),
+            data: seriesMore150
+          }, {
+            name: 'Feature1 < 100',
+            color: this.getRandomColor(),
+            data: seriesLess100
+          }, {
+            name: 'Other',
+            color: this.getRandomColor(),
+            data: seriesOther
+          }
+        
+      )
+      } else if (type === 'Goods'){
+        productData[this.state.year].forEach(obj => {
+          seriesData.push(
+            {
+              name: obj.name,
+              color: this.getRandomColor(),
+              data: [[obj.feature1, obj.feature2]],
+            },
+          );
+        })
+      }
+      
+      return seriesData;
+    }
+    
+
+    getDataByYear = (year) => {
+      let seriesData = [];
+      let array2015 = [];
+      let array2016 = [];
+      
+      products.forEach(el => {
+        if (el.year === 2015){
+          array2015.push(el)
+        } else if (el.year === 2016){
+          array2016.push(el)
+        }
+      })
+      const productData = {
+        2015: array2015,
+        2016: array2016,
+      }
+      if (!this.state || (this.state.type === 'Goods')){
+        productData[year].forEach(obj => {
+          seriesData.push(
+            {
+              name: obj.name,
+              color: this.getRandomColor(),
+              data: [[obj.feature1, obj.feature2]],
+            },
+          );
+        })
+      } else if (this.state.type === 'Groups of Goods'){
         let seriesMore150 = [];
         let seriesLess100 = [];
         let seriesOther = [];
-        products.forEach(obj => {
-          if (obj.year === year){
-            if (obj.feature1 > 150){
-              seriesMore150.push(
-                [obj.feature1, obj.feature2]
-              )
-            } else if (obj.feature1 < 100) {
-              seriesLess100.push(
-                [obj.feature1, obj.feature2]
-              )
-            } else {
-              seriesOther.push(
-                [obj.feature1, obj.feature2]
-              )
-            }
+        productData[year].forEach(obj => {
+          if (obj.feature1 > 150){
+            seriesMore150.push(
+              [obj.feature1, obj.feature2]
+            )
+          } else if (obj.feature1 < 100) {
+            seriesLess100.push(
+              [obj.feature1, obj.feature2]
+            )
+          } else {
+            seriesOther.push(
+              [obj.feature1, obj.feature2]
+            )
           }
-
-        })
-        seriesData.push(
-          
-            {
-              name: 'Feature1 > 150',
-              color: this.getRandomColor(),
-              data: seriesMore150
-            }, {
-              name: 'Feature1 < 100',
-              color: this.getRandomColor(),
-              data: seriesLess100
-            }, {
-              name: 'Other',
-              color: this.getRandomColor(),
-              data: seriesOther
-            }
-          
-        )
+      })
+      seriesData.push(        
+          {
+            name: 'Feature1 > 150',
+            color: this.getRandomColor(),
+            data: seriesMore150
+          }, {
+            name: 'Feature1 < 100',
+            color: this.getRandomColor(),
+            data: seriesLess100
+          }, {
+            name: 'Other',
+            color: this.getRandomColor(),
+            data: seriesOther
+          }
+        
+      )
       }
-      console.log(seriesData[1]);
+      
       return seriesData;
     }
 
@@ -93,10 +166,11 @@ class Chart extends Component {
     }
 
     displayTypeChangedHandler = (event) => {
-      const year = this.state.year;
       this.setState({
         displayType: event.target.value,
+        displayData: this.getDataByType(event.target.value)
       });
+      console.log(this.state)
     }
 
     render() {
