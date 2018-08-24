@@ -9,12 +9,8 @@ import * as actions from '../../redux/actions';
 class Chart extends Component {
   constructor(props) {
     super(props);
-    const year = 2016;
-    const displayType = 'Goods';
     this.state = {
-      year,
-      displayType,
-      displayData: this.getDataByProps(year, displayType),
+      displayData: this.getDataByProps(this.props.year, this.props.displayType),
     };
   }
 
@@ -102,23 +98,23 @@ class Chart extends Component {
   yearChangedHandler = (event) => {
     const year = Number(event.target.value);
     this.props.onSetYear(year);
+    this.setState({
+      displayData: this.getDataByProps(year, this.props.displayType),
+    });
   }
 
   displayTypeChangedHandler = (event) => {
     const displayType = event.target.value;
+    this.props.onSetType(displayType);
     this.setState({
-      displayType,
-      displayData: this.getDataByProps(this.state.year, displayType),
+      displayData: this.getDataByProps(this.props.year, displayType),
     });
-    console.log(this.state);
   }
 
   render() {
-    //options.series = this.state.displayData;
-
     return (
       <div>
-        <select onChange={this.displayTypeChangedHandler} value={this.state.displayType}>
+        <select onChange={this.displayTypeChangedHandler} value={this.props.displayType}>
           <option>Goods</option>
           <option>Groups of Goods</option>
         </select>
@@ -140,11 +136,13 @@ class Chart extends Component {
 }
 
 const mapStateToProps = state => ({
-  year: state.data.year
+  year: state.data.year,
+  displayType: state.data.displayType,
 });
 
 const mapDispatchToProps = {
   onSetYear: actions.setYear,
+  onSetType: actions.setType,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chart);
