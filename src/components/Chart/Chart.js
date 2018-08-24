@@ -10,8 +10,55 @@ class Chart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayData: this.getDataByProps(this.props.year, this.props.displayType),
+      displayData: this.getDataByType(this.props.data, this.props.displayType),
     };
+  }
+
+  getDataByType(data, type) {
+    const seriesData = [];
+    if (type === 'Goods') {
+      data.forEach(obj => {
+        seriesData.push({
+          name: obj.name,
+          color: this.getRandomColor(),
+          data: [[obj.feature1, obj.feature2]],
+        },
+      )
+      })
+    } else if (type === 'Groups of Goods') {
+      const seriesMore150 = [];
+      const seriesLess100 = [];
+      const seriesOther = [];
+      data.forEach(el => {
+        el.forEach(obj => {
+          if (obj.feature1 > 150) {
+            seriesMore150.push([obj.feature1, obj.feature2]);
+          } else if ( obj.feature1 < 100) {
+            seriesLess100.push([obj.feature1, obj.feature2])
+          } else {
+            seriesOther.push([obj.feature1, obj.feature2])
+          }
+        })
+      })
+      seriesData.push(
+
+        {
+          name: 'Feature1 > 150',
+          color: this.getRandomColor(),
+          data: seriesMore150,
+        }, {
+          name: 'Feature1 < 100',
+          color: this.getRandomColor(),
+          data: seriesLess100,
+        }, {
+          name: 'Other',
+          color: this.getRandomColor(),
+          data: seriesOther,
+        },
+
+      );
+    }
+    return seriesData;
   }
 
   getDataByProps(year, displayType) {
@@ -122,7 +169,7 @@ class Chart extends Component {
           <option>2016</option>
           <option>2015</option>
         </select>
-        <select />
+        <button onClick={() => console.log(this.props.data)}>Console.log</button>
         <HighchartsReact
           highcharts={Highcharts}
           options={{
@@ -135,11 +182,25 @@ class Chart extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  year: state.data.year,
-  displayType: state.data.displayType,
-});
+const selectDataByGroups = data => data.reduce((prevValue, newValue) => {
+  if (newValue.feature1 > 150) {
+    prevValue[2].push(newValue);
+  } else if (newValue.feature1 < 100) {
+    prevValue[0].push(newValue);
+  } else {
+    prevValue[1].push(newValue);
+  }
+  return prevValue;
+}, [[], [], []]);
 
+const mapStateToProps = (state) => {
+  const { displayType, data, year } = state.data;
+  return {
+    year,
+    displayType,
+    data: displayType === 'Groups of Goods' ? selectDataByGroups(data[year]) : data[year],
+  };
+};
 const mapDispatchToProps = {
   onSetYear: actions.setYear,
   onSetType: actions.setType,
