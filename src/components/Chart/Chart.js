@@ -17,29 +17,28 @@ class Chart extends Component {
   getDataByType(data, type) {
     const seriesData = [];
     if (type === 'Goods') {
-      data.forEach(obj => {
+      data.forEach((obj) => {
         seriesData.push({
           name: obj.name,
           color: this.getRandomColor(),
           data: [[obj.feature1, obj.feature2]],
-        },
-      )
-      })
+        });
+      });
     } else if (type === 'Groups of Goods') {
       const seriesMore150 = [];
       const seriesLess100 = [];
       const seriesOther = [];
-      data.forEach(el => {
-        el.forEach(obj => {
+      data.forEach((el) => {
+        el.forEach((obj) => {
           if (obj.feature1 > 150) {
             seriesMore150.push([obj.feature1, obj.feature2]);
-          } else if ( obj.feature1 < 100) {
-            seriesLess100.push([obj.feature1, obj.feature2])
+          } else if (obj.feature1 < 100) {
+            seriesLess100.push([obj.feature1, obj.feature2]);
           } else {
-            seriesOther.push([obj.feature1, obj.feature2])
+            seriesOther.push([obj.feature1, obj.feature2]);
           }
-        })
-      })
+        });
+      });
       seriesData.push(
 
         {
@@ -154,7 +153,7 @@ class Chart extends Component {
     const displayType = event.target.value;
     this.props.onSetType(displayType);
     this.setState({
-      displayData: this.getDataByProps(this.props.year, displayType),
+      displayData: this.getDataByType(this.props.data, displayType),
     });
   }
 
