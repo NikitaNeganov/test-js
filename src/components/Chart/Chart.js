@@ -8,17 +8,14 @@ import * as actions from '../../redux/actions';
 // import options from './options';
 
 class Chart extends Component {
-
   yearChangedHandler = (event) => {
     const year = Number(event.target.value);
     this.props.onSetYear(year);
-    
   }
 
   displayTypeChangedHandler = (event) => {
     const displayType = event.target.value;
     this.props.onSetType(displayType);
-    
   }
 
   render() {
@@ -46,17 +43,17 @@ class Chart extends Component {
 }
 
 const selectDataByGroups = data => data.reduce((prevValue, newValue) => {
-  console.log(newValue.data)
-  if (newValue.data[0] > 150) {
-    prevValue[2].push(newValue.data);
-  } else if (newValue.data[0] < 100) {
-    prevValue[0].push(newValue.data);
+  const nv = newValue.data[0];
+  if (nv[0] > 150) {
+    prevValue[2].push(nv);
+  } else if (nv[0] < 100) {
+    prevValue[0].push(nv);
   } else {
-    prevValue[1].push(newValue.data);
+    prevValue[1].push(nv);
   }
   return prevValue;
 }, [[], [], []]).map((v, i) => ({
-  name: 'Group ' + (i + 1),
+  name: `Group ${i + 1}`,
   color: getRandomColor(),
   data: v,
 }));
