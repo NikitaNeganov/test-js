@@ -29,7 +29,6 @@ class Chart extends Component {
           <option>2016</option>
           <option>2015</option>
         </select>
-        <button onClick={() => console.log(this.props.data)}>Console.log</button>
         <HighchartsReact
           highcharts={Highcharts}
           options={{
